@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import re
 from calendar import monthrange
+from io import StringIO
 
 url = "https://pt.wikipedia.org/wiki/Pesquisas_de_opini%C3%A3o_para_a_elei%C3%A7%C3%A3o_presidencial_no_Brasil_em_2022"
 
@@ -11,7 +12,8 @@ html = requests.get(
     headers={"User-Agent": "Mozilla/5.0"}
 ).text
 
-tabelas = pd.read_html(html)
+tabelas = pd.read_html(StringIO(html))
+
 tabelas[18]
 df= tabelas[18]
 
@@ -27,7 +29,7 @@ df.drop(columns=['Indecisos e Absentos', 'Vantagem'],
         )
 
 df['Instituto de Pesquisa'] = df['Instituto de Pesquisa'].str.replace(r'\[.*?\]', '', regex=True)
-
+df["Tamanho da Amostra"] = df["Tamanho da Amostra"] *1000
 for coluna in ["Bolsonaro PL", "Lula PT"]:
     df[coluna] = df[coluna].str.replace('%', '', regex=False).str.replace(',', '.', regex=False).str.strip()
     df[coluna] = pd.to_numeric(df[coluna])
@@ -114,6 +116,10 @@ df.drop(
 )
 
 # %%
-df.to_csv("C:/Users/david/OneDrive/Desktop/Portifolio/agregador-pesquisa-eleitoral/data/_pesquisa_2022_segundo_turno_lula_bolsonaro.csv",
-          index= False)
+df.to_csv("C:/Users/david/OneDrive/Desktop/Portifolio/agregador-pesquisa-eleitoral/data/pesquisa_2022_segundo_turno_lula_bolsonaro.csv",
+          index= False,
+        encoding='utf-8-sig'
+          )
+# %%
+df
 # %%
