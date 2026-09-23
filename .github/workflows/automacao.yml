@@ -1,0 +1,12 @@
+name: Automação
+
+on:
+  workflow_dispatch:
+
+jobs:
+  teste:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Teste
+        run: echo "GitHub Actions funcionando!"
