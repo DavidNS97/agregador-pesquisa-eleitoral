@@ -115,11 +115,9 @@ df.drop(
 
 )
 
-# %%
-df.to_csv("C:/Users/david/OneDrive/Desktop/Portifolio/agregador-pesquisa-eleitoral/data/pesquisa_2022_segundo_turno_lula_bolsonaro.csv",
-          index= False,
-        encoding='utf-8-sig'
-          )
-# %%
-df
-# %%
+
+df.to_csv(
+    "data/pesquisa_2022_segundo_turno_lula_bolsonaro.csv",
+    index=False,
+    encoding='utf-8-sig'
+)

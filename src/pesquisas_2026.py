@@ -133,10 +133,11 @@ df.drop(
     inplace=True
 )
 
-df.to_csv("C:/Users/david/OneDrive/Desktop/Portifolio/agregador-pesquisa-eleitoral/data/pesquisa_2026_segundo_turno_lula_flavio.csv",
-          index= False,
-        encoding='utf-8-sig'
-          )
+df.to_csv(
+    "data/pesquisa_2026_segundo_turno_lula_flavio.csv",
+    index=False,
+    encoding='utf-8-sig'
+)
 
 
 
