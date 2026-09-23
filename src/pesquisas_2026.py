@@ -11,9 +11,11 @@ html = requests.get(
     headers={"User-Agent": "Mozilla/5.0"}
 ).text
 
-tabelas = pd.read_html(StringIO(html))
-
-
+tabelas = pd.read_html(
+    StringIO(html),
+    decimal=',',
+    thousands=None
+)
 
 df = None
 
@@ -47,8 +49,12 @@ for colunas_df in df.columns.tolist():
      nome_coluna.append(colunas_df[1])
 
 df.columns = nome_coluna
-
-# %%
+df.rename(
+    columns={
+        'Contratante / Pesquisa Número de identificação': 'Instituto de Pesquisa'
+    },
+    inplace=True
+)
 
 df.drop(columns=['Indecisos e Absentos', 'Vantagem'],
         inplace=True
@@ -68,7 +74,7 @@ pd.to_numeric(
 df['Tamanho da Amostra'] = df['Tamanho da Amostra'].str.replace(r'\s+', '', regex=True)
 df['Lula PT'] = df['Lula PT'].str.replace('%', '', regex=False).str.replace(',', '.', regex=False)
 df['Flávio PL'] = df['Flávio PL'].str.replace('%', '', regex=False).str.replace(',', '.', regex=False)
-df['Contratante / Pesquisa Número de identificação'] = df['Contratante / Pesquisa Número de identificação'].str.replace(r'\[.*?\]', '', regex=True)
+df['Instituto de Pesquisa'] = df['Instituto de Pesquisa'].str.replace(r'\[.*?\]', '', regex=True)
 
 
 
@@ -89,7 +95,7 @@ colunas_numericas = [
 
 df[colunas_numericas] = df[colunas_numericas].apply(pd.to_numeric)
 
-df['Margem de erro (pontos percentuais)'] = df['Margem de erro (pontos percentuais)'] / 10
+df['Margem de erro (pontos percentuais)'] = df['Margem de erro (pontos percentuais)'] 
 df['Lula PT'] = df['Lula PT'] / 100
 df['Flávio PL'] = df['Flávio PL'] / 100
 
@@ -127,8 +133,6 @@ df.drop(
     inplace=True
 )
 
-
-# %%
 df.to_csv("C:/Users/david/OneDrive/Desktop/Portifolio/agregador-pesquisa-eleitoral/data/pesquisa_2026_segundo_turno_lula_flavio.csv",
           index= False,
         encoding='utf-8-sig'
@@ -136,3 +140,5 @@ df.to_csv("C:/Users/david/OneDrive/Desktop/Portifolio/agregador-pesquisa-eleitor
 
 
 
+
+# %%
