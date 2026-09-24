@@ -28,3 +28,6 @@ jobs:
 
       - name: Executar scraper 2026
         run: python src/pesquisas_2026.py
+        
+      - name: Carregar pesquisas 2026 no banco
+        run: python src/carga_2026.py

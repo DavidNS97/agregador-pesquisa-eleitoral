@@ -8,7 +8,7 @@ conexao = conectar_banco()
 cursor = conexao.cursor()
 print("conectado")
 df = pd.read_csv(
-    "../data/pesquisa_2026_segundo_turno_lula_flavio.csv"
+    "/data/pesquisa_2026_segundo_turno_lula_flavio.csv"
 )
 
 for index, row in df.iterrows():
