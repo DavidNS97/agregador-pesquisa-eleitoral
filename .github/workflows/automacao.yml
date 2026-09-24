@@ -3,6 +3,9 @@ name: Automação
 on:
   workflow_dispatch:
 
+  schedule:
+    - cron: "0 6 * * 2,4,6"
+
 jobs:
   teste:
     runs-on: ubuntu-latest
@@ -28,6 +31,6 @@ jobs:
 
       - name: Executar scraper 2026
         run: python src/pesquisas_2026.py
-        
+
       - name: Carregar pesquisas 2026 no banco
         run: python src/carga_2026.py
