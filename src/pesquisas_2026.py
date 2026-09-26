@@ -61,31 +61,45 @@ df.drop(columns=['Indecisos e Absentos', 'Vantagem'],
 
         )
 
-
-
-df['Margem de erro (pontos percentuais)'].unique()# %%
-
-
-pd.to_numeric(
-    df['Margem de erro (pontos percentuais)'],
-    errors='coerce'
+df['Tamanho da Amostra'] = (
+    df['Tamanho da Amostra']
+    .str.replace(r'\s+', '', regex=True)
 )
 
-df['Tamanho da Amostra'] = df['Tamanho da Amostra'].str.replace(r'\s+', '', regex=True)
-df['Lula PT'] = df['Lula PT'].str.replace('%', '', regex=False).str.replace(',', '.', regex=False)
-df['Flávio PL'] = df['Flávio PL'].str.replace('%', '', regex=False).str.replace(',', '.', regex=False)
-df['Instituto de Pesquisa'] = df['Instituto de Pesquisa'].str.replace(r'\[.*?\]', '', regex=True)
+df['Lula PT'] = (
+    df['Lula PT']
+    .str.replace('%', '', regex=False)
+    .str.replace(',', '.', regex=False)
+)
+
+df['Flávio PL'] = (
+    df['Flávio PL']
+    .str.replace('%', '', regex=False)
+    .str.replace(',', '.', regex=False)
+)
+
+df['Margem de erro (pontos percentuais)'] = (
+    df['Margem de erro (pontos percentuais)']
+    .str.replace('±', '', regex=False)
+    .str.replace(',', '.', regex=False)
+)
+
+df['Instituto de Pesquisa'] = (
+    df['Instituto de Pesquisa']
+    .str.replace(r'\[.*?\]', '', regex=True)
+)
 
 
 
-#filtrando valores nao numericos ( rodapes entre linhas)
+# Filtrando valores não numéricos 
 valido = pd.to_numeric(
     df['Tamanho da Amostra'],
     errors='coerce'
 ).notna()
+
 df = df[valido].copy()
 
-#transformando valores para numerico
+# Transformando valores para numérico
 colunas_numericas = [
     'Tamanho da Amostra',
     'Margem de erro (pontos percentuais)',
