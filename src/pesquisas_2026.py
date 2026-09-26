@@ -127,33 +127,60 @@ meses = {
     'Nov': '11',
     'Dez': '12'
 }
-for mes, numero in meses.items():
-    df['Data(s) de Pesquisa'] = df['Data(s) de Pesquisa'].str.replace(mes, numero)
 
-df['data_inicio_pesquisa'] = df['Data(s) de Pesquisa'].str.split(r'[-–]').str[0].str.strip()
-df['data_fim_pesquisa'] = df['Data(s) de Pesquisa'].str.split(r'[-–]').str[1].str.strip()
+def corrigir_intervalo(data):
+    if ' e ' in data and ' de ' in data:
+        dias, mes = data.split(' de ')
+        dia_inicio, dia_fim = dias.split(' e ')
+
+        mes = mes[:3].capitalize()
+
+        return f'{dia_inicio} {mes} – {dia_fim} {mes}'
+
+    return data
+
+
+df['Data(s) de Pesquisa'] = (
+    df['Data(s) de Pesquisa']
+    .apply(corrigir_intervalo)
+)
+
+for mes, numero in meses.items():
+    df['Data(s) de Pesquisa'] = (
+        df['Data(s) de Pesquisa']
+        .str.replace(mes, numero, regex=False)
+    )
+
+df['data_inicio_pesquisa'] = (
+    df['Data(s) de Pesquisa']
+    .str.split(r'[-–]')
+    .str[0]
+    .str.strip()
+)
+
+df['data_fim_pesquisa'] = (
+    df['Data(s) de Pesquisa']
+    .str.split(r'[-–]')
+    .str[1]
+    .str.strip()
+)
 
 for coluna in ['data_inicio_pesquisa', 'data_fim_pesquisa']:
     df[coluna] = df[coluna] + ' 2026'
     df[coluna] = df[coluna].str.replace(' ', '-', regex=False)
     df[coluna] = pd.to_datetime(
         df[coluna],
-        format='%d-%m-%Y')
-
-
+        format='%d-%m-%Y'
+    )
 
 df.drop(
     columns=['Data(s) de Pesquisa'],
     inplace=True
 )
 
+
 df.to_csv(
     "data/pesquisa_2026_segundo_turno_lula_flavio.csv",
     index=False,
     encoding='utf-8-sig'
 )
-
-
-
-
-# %%
