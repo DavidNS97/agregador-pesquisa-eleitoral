@@ -122,7 +122,7 @@ ORDER BY tp.data_fim DESC;
 # CARREGAMENTO DOS DADOS
 # ============================================================
 
-@st.cache_data
+@st.cache_data(ttl=3600)
 def carregar_dados():
 
     conexao = conectar_banco()
