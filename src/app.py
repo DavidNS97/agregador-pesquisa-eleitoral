@@ -251,7 +251,7 @@ usar_ajuste = st.sidebar.toggle(
 
 meia_vida = st.sidebar.slider(
     "Meia-vida da recência (dias)",
-    min_value=7,
+    min_value=3,
     max_value=60,
     value=27,
     step=1
