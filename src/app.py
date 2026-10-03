@@ -165,7 +165,6 @@ st.caption(
 # ============================================================
 # FILTROS
 # ============================================================
-
 st.sidebar.header("Configurações do modelo")
 
 st.sidebar.subheader("Pesquisas consideradas")
@@ -174,30 +173,77 @@ institutos = sorted(
     df_2026["instituto"].dropna().unique()
 )
 
-selecionar_todas = st.sidebar.checkbox(
+# Estado inicial das pesquisas aplicadas
+if "pesquisas_aplicadas" not in st.session_state:
+    st.session_state.pesquisas_aplicadas = institutos.copy()
+
+
+# Callback do "Selecionar todas"
+def atualizar_todas_as_pesquisas():
+    for instituto in institutos:
+        st.session_state[f"instituto_{instituto}"] = (
+            st.session_state.selecionar_todas
+        )
+
+
+# Checkbox "Selecionar todas"
+st.sidebar.checkbox(
     "Selecionar todas",
-    value=True
+    key="selecionar_todas",
+    on_change=atualizar_todas_as_pesquisas
 )
 
-pesquisas_selecionadas = []
 
-coluna_1, coluna_2 = st.sidebar.columns(2)
+# Formulário somente para as pesquisas
+with st.sidebar.form("form_pesquisas"):
 
-for i, instituto in enumerate(institutos):
+    selecao_pesquisas = []
 
-    coluna = coluna_1 if i % 2 == 0 else coluna_2
+    coluna_1, coluna_2 = st.columns(2)
 
-    selecionado = coluna.checkbox(
-        instituto,
-        value=selecionar_todas,
-        key=f"instituto_{instituto}"
+    for i, instituto in enumerate(institutos):
+
+        coluna = coluna_1 if i % 2 == 0 else coluna_2
+
+        # Inicializa o checkbox com base nas pesquisas aplicadas
+        if f"instituto_{instituto}" not in st.session_state:
+            st.session_state[f"instituto_{instituto}"] = (
+                instituto in st.session_state.pesquisas_aplicadas
+            )
+
+        selecionado = coluna.checkbox(
+            instituto,
+            key=f"instituto_{instituto}"
+        )
+
+        if selecionado:
+            selecao_pesquisas.append(instituto)
+
+    aplicar_pesquisas = st.form_submit_button(
+        "Aplicar pesquisas"
     )
 
-    if selecionado:
-        pesquisas_selecionadas.append(instituto)
+
+# Só atualiza o modelo quando clicar no botão
+if aplicar_pesquisas:
+
+    st.session_state.pesquisas_aplicadas = (
+        selecao_pesquisas
+    )
+
+    st.rerun()
+
+
+# Seleção efetivamente utilizada pelo modelo
+pesquisas_selecionadas = (
+    st.session_state.pesquisas_aplicadas
+)
+
 
 st.sidebar.divider()
 
+
+# Estes continuam dinâmicos
 usar_ajuste = st.sidebar.toggle(
     "Considerar erro histórico de 2022",
     value=False
@@ -205,11 +251,12 @@ usar_ajuste = st.sidebar.toggle(
 
 meia_vida = st.sidebar.slider(
     "Meia-vida da recência (dias)",
-    min_value=3,
+    min_value=7,
     max_value=60,
     value=27,
     step=1
 )
+
 
 st.sidebar.caption(
     "A meia-vida controla o quanto o modelo prioriza pesquisas recentes. Quanto menor o número de dias, mais rapidamente pesquisas antigas perdem peso. Quanto maior, maior a influência das pesquisas anteriores"
