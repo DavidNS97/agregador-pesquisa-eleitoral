@@ -4,5 +4,5 @@ lxml
 psycopg[binary]
 python-dotenv
 plotly
-scipy
 streamlit
+scipy
