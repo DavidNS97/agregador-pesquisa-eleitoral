@@ -244,6 +244,9 @@ pesquisas_consideradas = resultado[
 # ============================================================
 
 st.subheader("Probabilidade do modelo")
+st.caption(
+    "Simulação de Monte Carlo:Em 100.000 simulações, quantas vezes cada candidato ultrapassa 50% dos votos válidos."
+)
 
 col1, col2, col3 = st.columns([1, 2, 1])
 
@@ -331,7 +334,6 @@ html_blocos += """
 st.html(html_blocos)
 
 
-
 with col3:
 
     html_lula = f"""
@@ -365,6 +367,9 @@ with col3:
 # ============================================================
 
 st.subheader("Evolução das pesquisas")
+st.caption(
+    "Como os resultados das pesquisas evoluem ao longo do tempo e qual tendência o modelo projeta até a eleição."
+)
 
 historico = serie[
     [
