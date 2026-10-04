@@ -137,6 +137,12 @@ def corrigir_intervalo(data):
 
         return f'{dia_inicio} {mes} – {dia_fim} {mes}'
 
+    # Quando a pesquisa ocorreu em apenas um dia
+    if ' ' in data and not any(
+        separador in data for separador in ['-', '–']
+    ):
+        return f'{data} – {data}'
+
     return data
 
 
