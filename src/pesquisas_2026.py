@@ -91,14 +91,15 @@ df['Instituto de Pesquisa'] = (
 
 
 
-# Filtrando valores não numéricos 
-valido = pd.to_numeric(
+# Filtrando apenas linhas que representam pesquisas válidas
+df['Tamanho da Amostra'] = pd.to_numeric(
     df['Tamanho da Amostra'],
     errors='coerce'
-).notna()
+)
 
-df = df[valido].copy()
-
+df = df[
+    df['Tamanho da Amostra'].notna()
+].copy()
 # Transformando valores para numérico
 colunas_numericas = [
     'Tamanho da Amostra',
@@ -129,7 +130,10 @@ meses = {
 }
 
 def corrigir_intervalo(data):
+
+    # Exemplo: 1 e 3 de Out
     if ' e ' in data and ' de ' in data:
+
         dias, mes = data.split(' de ')
         dia_inicio, dia_fim = dias.split(' e ')
 
@@ -137,14 +141,39 @@ def corrigir_intervalo(data):
 
         return f'{dia_inicio} {mes} – {dia_fim} {mes}'
 
-    # Quando a pesquisa ocorreu em apenas um dia
+    # Exemplo: 1 de Out
+    if ' de ' in data:
+
+        dia, mes = data.split(' de ')
+
+        mes = mes[:3].capitalize()
+
+        return f'{dia} {mes} – {dia} {mes}'
+
+    # Exemplo: 1 – 3 Out
+    if '–' in data:
+
+        inicio, fim = data.split('–')
+
+        inicio = inicio.strip()
+        fim = fim.strip()
+
+        # Se o mês aparece apenas no final,
+        # aplica o mesmo mês ao início.
+        if ' ' not in inicio:
+
+            mes = fim[-3:]
+
+            return f'{inicio} {mes} – {fim}'
+
+    # Exemplo: 3 Out
     if ' ' in data and not any(
         separador in data for separador in ['-', '–']
     ):
+
         return f'{data} – {data}'
 
     return data
-
 
 df['Data(s) de Pesquisa'] = (
     df['Data(s) de Pesquisa']
