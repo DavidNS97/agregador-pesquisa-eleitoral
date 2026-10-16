@@ -103,10 +103,24 @@ df[colunas_numericas] = df[colunas_numericas].apply(
 )
 
 
-# Filtrando apenas linhas que representam pesquisas válidas
+# Transformando valores para numérico
+colunas_numericas = [
+    'Tamanho da Amostra',
+    'Margem de erro (pontos percentuais)',
+    'Lula PT',
+    'Flávio PL'
+]
 
+df[colunas_numericas] = df[colunas_numericas].apply(
+    pd.to_numeric,
+    errors="coerce"
+)
+
+# Filtrando apenas linhas que representam pesquisas válidas
 df = df[
     df['Tamanho da Amostra'].notna()
+    & df['Lula PT'].notna()
+    & df['Flávio PL'].notna()
 ].copy()
 
 
@@ -213,11 +227,12 @@ df.drop(
     inplace=True
 )
 
-
 df.to_csv(
     "data/pesquisa_2026_segundo_turno_lula_flavio.csv",
     index=False,
     encoding='utf-8-sig'
 )
+
+
 
 # %%
