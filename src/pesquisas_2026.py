@@ -89,17 +89,6 @@ df['Instituto de Pesquisa'] = (
     .str.replace(r'\[.*?\]', '', regex=True)
 )
 
-
-
-# Filtrando apenas linhas que representam pesquisas válidas
-df['Tamanho da Amostra'] = pd.to_numeric(
-    df['Tamanho da Amostra'],
-    errors='coerce'
-)
-
-df = df[
-    df['Tamanho da Amostra'].notna()
-].copy()
 # Transformando valores para numérico
 colunas_numericas = [
     'Tamanho da Amostra',
@@ -108,7 +97,18 @@ colunas_numericas = [
     'Flávio PL'
 ]
 
-df[colunas_numericas] = df[colunas_numericas].apply(pd.to_numeric)
+df[colunas_numericas] = df[colunas_numericas].apply(
+    pd.to_numeric,
+    errors="coerce"
+)
+
+
+# Filtrando apenas linhas que representam pesquisas válidas
+
+df = df[
+    df['Tamanho da Amostra'].notna()
+].copy()
+
 
 df['Margem de erro (pontos percentuais)'] = df['Margem de erro (pontos percentuais)'] 
 df['Lula PT'] = df['Lula PT'] / 100
@@ -219,3 +219,5 @@ df.to_csv(
     index=False,
     encoding='utf-8-sig'
 )
+
+# %%
